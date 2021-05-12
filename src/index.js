@@ -1,13 +1,30 @@
 const express = require('express');
-const server = express();
-const pdfS = require('html-pdf');
-const ejs = require('ejs');
+const app = express();
+const port = 3030;
+const bp = require('body-parser');
+const qr = require('qrcode');
 
-server.get('/', (req, res) => {
-  res.send('Hello world');
+console.log(qr);
+
+app.set('view engine', 'ejs');
+app.use(bp.urlencoded({ extended: false }));
+app.use(express.json());
+
+app.get('/', (req, res) => {
+  res.render('index');
 });
 
-const port = 3636;
-server.listen(port, () => {
-  console.log(`Server running on port ${port}`);
+app.post('/scan', (req, res) => {
+  const { url } = req.body;
+  if (!url) return res.json({ message: 'Empty Data' });
+  qr.toDataURL(url, (err, src) => {
+    if (err) return res.status(400).json({ message: 'Error occured' });
+    res.status(200).json({
+      URL: src,
+    });
+  });
+});
+
+app.listen(port, () => {
+  console.log(`Server runnig on port ${port}`);
 });
