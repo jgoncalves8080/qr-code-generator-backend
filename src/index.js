@@ -1,7 +1,6 @@
 const express = require('express');
 const app = express();
-const port = 3030;
-const bp = require('body-parser');
+const port = Process.env.PORT || 3030;
 const qr = require('qrcode');
 const cors = require('cors');
 
